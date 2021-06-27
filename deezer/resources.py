@@ -103,6 +103,31 @@ class Album(Resource):
         """
         return self.iter_relation("tracks", **kwargs)
 
+    def rate(self, rating, **kwargs):
+        """
+        Add a rating to an album.  Requires a client with an Access Token for a given user.
+
+        (DEV NOTE: Doesn't seem to have any effect on the data model returned by Deezer.  Adding a rating will return
+        true, with a 200 status code, but subsequent album calls on that album will still have rating: 0.  Also there is
+        not UI indication of ratings for Deezer so adding this for API quality purposes even though it doesn't have any
+        lasting effect.)
+
+        :param rating: Integer 1-5, star rating
+
+        :returns: True if valid API call, excepts on error with ValueError
+        """
+        url = self.client.object_url(self.type, self.id, None, note=rating, **kwargs)
+        response = self.client.session.post(url)
+        json = response.json()
+        if "error" in json:
+            error = json['error']
+            raise ValueError(
+                "API request return error {} for POST operation: {} id: {} with message '{}'".format(
+                    error['code'], self.type, self.id, error['message']
+                )
+            )
+        return True
+
 
 class Artist(Resource):
     """
