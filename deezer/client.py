@@ -150,7 +150,7 @@ class Client:
             request = request[1:]
         return "{}://{}/{}".format(self.scheme, self.host, request)
 
-    def object_url(self, object_t, object_id=None, relation=None, **kwargs):
+    def object_url(self, object_t, object_id=None, endpoint=None, **kwargs):
         """
         Helper method to build the url to query to access the object
         passed as parameter
@@ -160,7 +160,7 @@ class Client:
         if object_t not in self.objects_types:
             raise TypeError("{} is not a valid type".format(object_t))
         request_items = (
-            str(item) for item in [object_t, object_id, relation] if item is not None
+            str(item) for item in [object_t, object_id, endpoint] if item is not None
         )
         request = "/".join(request_items)
         base_url = self.url(request)
