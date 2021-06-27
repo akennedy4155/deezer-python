@@ -239,7 +239,7 @@ class TestClient:
     def test_search_with_relation(self, client):
         """Test search method with relation"""
         assert (
-            client.object_url("search", relation="album", q="Daft Punk")
+            client.object_url("search", endpoint="album", q="Daft Punk")
             == "https://api.deezer.com/search/album?q=Daft+Punk"
         )
         result = client.search("Daft Punk", "album")
@@ -278,7 +278,7 @@ class TestClient:
         """Test advanced_search method: with relation"""
         # Two terms with a relation
         assert client.object_url(
-            "search", relation="track", q='artist:"Lou Doillon" track:"Joke"'
+            "search", endpoint="track", q='artist:"Lou Doillon" track:"Joke"'
         ) == (
             "https://api.deezer.com/search/track?"
             "q=artist%3A%22Lou+Doillon%22+track%3A%22Joke%22"
