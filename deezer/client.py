@@ -196,6 +196,21 @@ class Client:
             )
         return self._process_json(json, parent)
 
+    def post(
+        self, object_t, object_id=None, endpoint=None, **kwargs
+    ):
+        url = self.object_url(object_t, object_id, endpoint, **kwargs)
+        response = self.session.post(url)
+        json = response.json()
+        error = json.get('error')
+        if error:
+            raise ValueError(
+                "API request return error {} for POST operation: {} id: {} with message '{}'".format(
+                    error['code'], object_t, object_id, error['message']
+                )
+            )
+        return True
+
     def get_album(self, object_id, relation=None, **kwargs):
         """
         Get the album with the provided id

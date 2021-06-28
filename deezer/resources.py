@@ -52,6 +52,9 @@ class Resource:
         # pylint: disable=E1101
         return self.client.get_object(self.type, self.id, relation, self, **kwargs)
 
+    def post(self, endpoint, **kwargs):
+        return self.client.post(self.type, self.id, endpoint, **kwargs)
+
     def iter_relation(self, relation, **kwargs):
         """
         Generic method to iterate relation from any resource.
@@ -116,17 +119,7 @@ class Album(Resource):
 
         :returns: True if valid API call, excepts on error with ValueError
         """
-        url = self.client.object_url(self.type, self.id, None, note=rating, **kwargs)
-        response = self.client.session.post(url)
-        json = response.json()
-        if "error" in json:
-            error = json['error']
-            raise ValueError(
-                "API request return error {} for POST operation: {} id: {} with message '{}'".format(
-                    error['code'], self.type, self.id, error['message']
-                )
-            )
-        return True
+        self.post(None, note=rating, **kwargs)
 
 
 class Artist(Resource):
@@ -487,3 +480,17 @@ class Episode(Resource):
 
     All the fields documented on Deezer are accessible by as class attributes.
     """
+    def bookmark(self, offset, **kwargs):
+        """
+        Add a bookmark to an episode.  Requires a client with an Access Token for a given user.
+
+        (DEV NOTE: Doesn't seem to have any effect on the data model returned by Deezer.  Valid API call returns True,
+        with a 200 status code, but subsequent calls to this API show nothing related to the feature that it describes.
+        Also there is not UI indication of this feature on Deezer.  Adding this for API quality purposes even though it
+        doesn't have any effect on Deezer's data model.)
+
+        :param offset: The offset where the bookmark is set, between 0 and 100
+
+        :returns: True if valid API call, excepts on error with ValueError
+        """
+        self.post('bookmark', offset=offset, **kwargs)
