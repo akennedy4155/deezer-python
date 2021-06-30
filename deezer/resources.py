@@ -110,16 +110,18 @@ class Album(Resource):
         """
         Add a rating to an album.  Requires a client with an Access Token for a given user.
 
-        (DEV NOTE: Doesn't seem to have any effect on the data model returned by Deezer.  Adding a rating will return
-        true, with a 200 status code, but subsequent album calls on that album will still have rating: 0.  Also there is
-        not UI indication of ratings for Deezer so adding this for API quality purposes even though it doesn't have any
-        lasting effect.)
+        Needed Permissions: basic_access
+
+        (DEV NOTE: Doesn't seem to have any effect on the data model returned by Deezer.  Valid API call returns True,
+        with a 200 status code, but subsequent calls to this API show nothing related to the feature that it describes.
+        Also there is not UI indication of this feature on Deezer.  Adding this for API quality purposes even though it
+        doesn't have any effect on Deezer's data model.)
 
         :param rating: Integer 1-5, star rating
-
-        :returns: True if valid API call, excepts on error with ValueError
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
         """
-        self.post(None, note=rating, **kwargs)
+        return self.post(None, note=rating, **kwargs)
 
 
 class Artist(Resource):
@@ -349,6 +351,60 @@ class Playlist(Resource):
         """
         return self.iter_relation("fans", **kwargs)
 
+    def rate(self, rating, **kwargs):
+        """
+        Add a rating to a playlist.  Requires a client with an Access Token for a given user.
+
+        Needed Permissions: N/A
+
+        (DEV NOTE: Always gives JSON error response back, even with valid inputs for 'note'.  Choosing to raise
+        NotImplementedError for clarity.  Looks to be not implemented by Deezer, even though in documentation for API.)
+
+        :param rating: Integer 1-5, star rating
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
+        """
+        # return self.post(None, note=rating, **kwargs)
+        raise NotImplementedError()
+
+    def update(self, **kwargs):
+        """
+        Update playlist.
+
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
+        """
+        return self.post(None, **kwargs)
+
+    def seen(self, **kwargs):
+        """
+        Mark the playlist as Seen.
+
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
+        """
+        return self.post('seen', **kwargs)
+
+    def add_tracks(self, songs, **kwargs):
+        """
+        Add tracks to the playlist.
+
+        :param songs: List of songs or Track objects (can be mixed) to add to the Playlist.
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
+        """
+        return self.post('tracks', songs=songs, **kwargs)
+
+    def order_tracks(self, order, **kwargs):
+        """
+        Order tracks in a playlist.
+
+        :param order: List of track IDs from the playlist in a specified order.
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
+        """
+        return self.post('tracks', order=order, **kwargs)
+
 
 class Comment(Resource):
     """
@@ -484,13 +540,15 @@ class Episode(Resource):
         """
         Add a bookmark to an episode.  Requires a client with an Access Token for a given user.
 
+        Needed Permissions: manage_library
+
         (DEV NOTE: Doesn't seem to have any effect on the data model returned by Deezer.  Valid API call returns True,
         with a 200 status code, but subsequent calls to this API show nothing related to the feature that it describes.
         Also there is not UI indication of this feature on Deezer.  Adding this for API quality purposes even though it
         doesn't have any effect on Deezer's data model.)
 
         :param offset: The offset where the bookmark is set, between 0 and 100
-
-        :returns: True if valid API call, excepts on error with ValueError
+        :returns: True if valid API call
+        :excepts ValueError: On invalid API call or other response error.
         """
-        self.post('bookmark', offset=offset, **kwargs)
+        return self.post('bookmark', offset=offset, **kwargs)
