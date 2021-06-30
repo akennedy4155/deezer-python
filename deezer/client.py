@@ -202,13 +202,21 @@ class Client:
         url = self.object_url(object_t, object_id, endpoint, **kwargs)
         response = self.session.post(url)
         json = response.json()
-        error = json.get('error')
-        if error:
-            raise ValueError(
-                "API request return error {} for POST operation: {} id: {} with message '{}'".format(
-                    error['code'], object_t, object_id, error['message']
+        try:
+            error = json.get('error')
+            if error:
+                raise ValueError(
+                    "API request return error {} for POST operation: {} id: {} with message '{}'".format(
+                        error.get('code'), object_t, object_id, error.get('message')
+                    )
                 )
-            )
+        except AttributeError:
+            if not json:
+                raise ValueError(
+                    "API request return error for POST operation: {} id: {}".format(
+                        object_t, object_id
+                    )
+                )
         return True
 
     def get_album(self, object_id, relation=None, **kwargs):
