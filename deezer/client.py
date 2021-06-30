@@ -196,18 +196,16 @@ class Client:
             )
         return self._process_json(json, parent)
 
-    def post(
-        self, object_t, object_id=None, endpoint=None, **kwargs
-    ):
+    def post(self, object_t, object_id=None, endpoint=None, **kwargs):
         url = self.object_url(object_t, object_id, endpoint, **kwargs)
         response = self.session.post(url)
         json = response.json()
         try:
-            error = json.get('error')
+            error = json.get("error")
             if error:
                 raise ValueError(
                     "API request return error {} for POST operation: {} id: {} with message '{}'".format(
-                        error.get('code'), object_t, object_id, error.get('message')
+                        error.get("code"), object_t, object_id, error.get("message")
                     )
                 )
         except AttributeError:

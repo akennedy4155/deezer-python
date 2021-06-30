@@ -383,7 +383,7 @@ class Playlist(Resource):
         :returns: True if valid API call
         :excepts ValueError: On invalid API call or other response error.
         """
-        return self.post('seen', **kwargs)
+        return self.post("seen", **kwargs)
 
     def add_tracks(self, songs, **kwargs):
         """
@@ -393,7 +393,7 @@ class Playlist(Resource):
         :returns: True if valid API call
         :excepts ValueError: On invalid API call or other response error.
         """
-        return self.post('tracks', songs=songs, **kwargs)
+        return self.post("tracks", songs=songs, **kwargs)
 
     def order_tracks(self, order, **kwargs):
         """
@@ -403,7 +403,7 @@ class Playlist(Resource):
         :returns: True if valid API call
         :excepts ValueError: On invalid API call or other response error.
         """
-        return self.post('tracks', order=order, **kwargs)
+        return self.post("tracks", order=order, **kwargs)
 
 
 class Comment(Resource):
@@ -536,6 +536,7 @@ class Episode(Resource):
 
     All the fields documented on Deezer are accessible by as class attributes.
     """
+
     def bookmark(self, offset, **kwargs):
         """
         Add a bookmark to an episode.  Requires a client with an Access Token for a given user.
@@ -551,4 +552,4 @@ class Episode(Resource):
         :returns: True if valid API call
         :excepts ValueError: On invalid API call or other response error.
         """
-        return self.post('bookmark', offset=offset, **kwargs)
+        return self.post("bookmark", offset=offset, **kwargs)
